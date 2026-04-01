@@ -15,6 +15,7 @@ product analytics and analytics engineering.
 ![Schema](docs/schema.png)
 
 
+
 ### dbt layer structure
 - `staging/` — 1:1 with raw source tables, light cleaning only
 - `intermediate/` — business logic, joins, unions
@@ -42,4 +43,4 @@ product analytics and analytics engineering.
 *Instructions will be added in Week 3 when dbt is set up.*
 
 ## Project status
-🟡 In progress — Week 1 complete
+🟢 Week 1 complete — schema designed, repo live, Snowflake active
