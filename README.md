@@ -43,4 +43,4 @@ product analytics and analytics engineering.
 *Instructions will be added in Week 3 when dbt is set up.*
 
 ## Project status
-🟢 Week 1 complete — schema designed, repo live, Snowflake active
+🟢 Week 2 complete- Data loaded to snowflake
