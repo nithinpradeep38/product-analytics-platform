@@ -1,0 +1,82 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Cleaned orders data - one row per order"
+    columns:
+      - name: order_id
+        description: "Primary key - unique identifier for each order"
+        data_tests:
+          - unique
+          - not_null
+      - name: user_id
+        description: "Foreign key - user who placed the order"
+        data_tests:
+          - not_null
+      - name: order_date
+        description: "Synthesized calendar date for the order"
+        data_tests:
+          - not_null
+      - name: order_number
+        description: "Sequence number of this order for the user"
+        data_tests:
+          - not_null
+
+  - name: stg_order_products
+    description: "Cleaned order products - one row per product per order"
+    columns:
+      - name: order_id
+        description: "Foreign key to stg_orders"
+        data_tests:
+          - not_null
+      - name: product_id
+        description: "Foreign key to stg_products"
+        data_tests:
+          - not_null
+      - name: is_reordered
+        description: "True if this product was previously ordered by this user"
+        data_tests:
+          - not_null
+
+  - name: stg_products
+    description: "Cleaned products master list - one row per product"
+    columns:
+      - name: product_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+      - name: aisle_id
+        description: "Foreign key to stg_aisles"
+        data_tests:
+          - not_null
+      - name: department_id
+        description: "Foreign key to stg_departments"
+        data_tests:
+          - not_null
+
+  - name: stg_aisles
+    description: "Cleaned aisles lookup - one row per aisle"
+    columns:
+      - name: aisle_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+      - name: aisle
+        description: "Aisle name"
+        data_tests:
+          - not_null
+
+  - name: stg_departments
+    description: "Cleaned departments lookup - one row per department"
+    columns:
+      - name: department_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+      - name: department
+        description: "Department name"
+        data_tests:
+          - not_null
