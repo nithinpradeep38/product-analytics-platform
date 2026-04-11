@@ -14,8 +14,7 @@ final as (
         month(date_day)                              as month,
         quarter(date_day)                            as quarter,
         year(date_day)                               as year,
-        case when dayofweek(date_day) in (0, 6)
-             then true else false end                as is_weekend
+        {{ is_weekend('dayofweek(date_day)') }}      as is_weekend
     from date_spine
 )
 select * from final
