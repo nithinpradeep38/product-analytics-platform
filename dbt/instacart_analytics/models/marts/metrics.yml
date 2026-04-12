@@ -1,0 +1,54 @@
+metrics:
+  - name: order_count
+    label: "Order Count"
+    description: "Total number of orders"
+    type: simple
+    type_params:
+      measure: order_count
+
+  - name: dau
+    label: "Daily Active Users"
+    description: "Distinct users placing at least one order per day"
+    type: simple
+    type_params:
+      measure: distinct_users
+
+  - name: wau
+    label: "Weekly Active Users"
+    description: "Distinct users placing at least one order per week"
+    type: simple
+    type_params:
+      measure: distinct_users
+
+  - name: avg_order_size
+    label: "Average Order Size"
+    description: "Average number of products per order"
+    type: simple
+    type_params:
+      measure: total_products_ordered
+
+  - name: reorder_rate
+    label: "Reorder Rate"
+    description: "Count of reordered items"
+    type: simple
+    type_params:
+      measure: reordered_count
+
+  - name: orders_per_user
+    label: "Orders Per User"
+    description: "Average number of orders placed per user"
+    type: derived
+    type_params:
+      expr: "order_count / dau"
+      metrics:
+        - name: order_count
+        - name: dau
+
+  - name: d7_retention
+    label: "D7 Retention"
+    description: "% of users who placed another order within 7 days of first order"
+    type: derived
+    type_params:
+      expr: "dau / dau"
+      metrics:
+        - name: dau

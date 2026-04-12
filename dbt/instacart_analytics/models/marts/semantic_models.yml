@@ -1,0 +1,75 @@
+semantic_models:
+  - name: orders
+    description: "Semantic model built on fct_orders - one row per order"
+    model: ref('fct_orders')
+    defaults:
+      agg_time_dimension: order_date
+
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+      - name: user
+        type: foreign
+        expr: user_id
+
+    dimensions:
+      - name: order_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: is_first_order
+        type: categorical
+      - name: order_dow
+        type: categorical
+      - name: order_hour_of_day
+        type: categorical
+
+    measures:
+      - name: order_count
+        description: "Count of orders"
+        agg: count
+        expr: order_id
+      - name: total_products_ordered
+        description: "Total products across all orders"
+        agg: sum
+        expr: total_products_in_order
+      - name: distinct_users
+        description: "Count of distinct users placing orders"
+        agg: count_distinct
+        expr: user_id
+
+  - name: order_products
+    description: "Semantic model built on fct_order_products - one row per product per order"
+    model: ref('fct_order_products')
+    defaults:
+      agg_time_dimension: order_date
+
+    entities:
+      - name: order_product
+        type: primary
+        expr: "concat(cast(order_id as varchar), '-', cast(product_id as varchar))"
+      - name: order
+        type: foreign
+        expr: order_id
+      - name: product
+        type: foreign
+        expr: product_id
+
+    dimensions:
+      - name: order_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: is_reordered
+        type: categorical
+
+    measures:
+      - name: order_product_count
+        description: "Count of order-product rows"
+        agg: count
+        expr: order_id
+      - name: reordered_count
+        description: "Count of reordered items"
+        agg: sum
+        expr: "case when is_reordered then 1 else 0 end"
