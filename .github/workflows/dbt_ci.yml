@@ -1,0 +1,48 @@
+name: dbt CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt
+        run: pip install dbt-core dbt-snowflake
+
+      - name: Create profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          instacart_analytics:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+                user: ${{ secrets.SNOWFLAKE_USER }}
+                password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+                role: ${{ secrets.SNOWFLAKE_ROLE }}
+                warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+                database: ANALYTICS_DEV
+                schema: STAGING
+                threads: 4
+          EOF
+
+      - name: Install dbt packages
+        working-directory: dbt/instacart_analytics
+        run: dbt deps
+
+      - name: dbt build
+        working-directory: dbt/instacart_analytics
+        run: dbt build
